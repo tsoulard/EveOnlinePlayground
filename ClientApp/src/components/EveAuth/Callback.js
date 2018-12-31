@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import qs from 'query-string';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom'
+
 
 export class Callback extends Component {
     displayName = Callback.name
@@ -10,9 +12,8 @@ export class Callback extends Component {
 
         this.state = {
             code: "",
-            accessCode: ""
+            accessToken: ""
         }
-
     }
 
     componentDidMount() {
@@ -28,19 +29,19 @@ export class Callback extends Component {
         var requestBody = {
             token: queryParams.code
         }
-        axios.post("api/EveAuth", requestBody).then((response) => {
-            this.setState({ accessToken: response.access_token });
+        axios.post("api/EveAuth/RequestToken", requestBody).then((response) => {
+            this.setState({ accessToken: response.data.access_token });
         });
+
+        this.render();
     }
 
-
-
     render() {
-        return (
-            <div>
-                <p>{this.state.code}</p>
-                <p>{this.state.accessCode}</p>
-            </div>
-        );
+        if (this.state.accessToken == ""){
+            return (
+                <h1>Not Autherised</h1>
+            );
+        }
+        return <Redirect to='/Home' />;
     }
 }

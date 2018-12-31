@@ -1,21 +1,32 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import qs from 'query-string';
+import axios from 'axios';
 
 export class Login extends Component {
     displayName = Login.name
 
-    // constructor(props){
-    //     super(props);
-    // }
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            loginUrl: ""
+        }
 
-    createLoginUrl() {
-        var x = "https://login.eveonline.com/oauth/authorize?response_type=code&redirect_uri=http://localhost:5002/callback&client_id=253a2a78c5434b3dae3c9d9002a3b537&scope=esi-characters.read_standings.v1";
+    }
 
-        return x;
+    componentDidMount() {
+        this.getLoginUrl();
+    }
+
+    getLoginUrl() {
+        axios.get("api/EveAuth/GetLoginUrl").then((response) => {
+            this.setState({loginUrl: response.data});
+        });
     }
 
     render(){
         return (
-            <a href={this.createLoginUrl()}>Login</a>
+            <a href={this.state.loginUrl}>Login</a>
         );
     }
 }
